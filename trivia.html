@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trivia Educativa</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 600px;
+    }
+    .question {
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+    .options button {
+      display: block;
+      width: 100%;
+      margin: 8px 0;
+      padding: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .options button.correct {
+      background-color: #c8e6c9;
+      color: #256029;
+    }
+    .options button.incorrect {
+      background-color: #ffcdd2;
+      color: #b71c1c;
+    }
+    #nextBtn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background-color: #1976d2;
+      color: white;
+      cursor: pointer;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    #result {
+      font-size: 24px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container animate__animated animate__fadeIn">
+    <div id="quiz"></div>
+    <button id="nextBtn">Siguiente</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    const questions = [
+      { q: "¿Cuál es la capital de México?", options: ["Guadalajara", "Monterrey", "Ciudad de México", "Puebla"], answer: 2 },
+      { q: "¿Qué planeta es conocido como el planeta rojo?", options: ["Venus", "Marte", "Júpiter", "Saturno"], answer: 1 },
+      { q: "¿Cuántos continentes hay en el mundo?", options: ["5", "6", "7", "8"], answer: 2 },
+      { q: "¿Qué instrumento mide los sismos?", options: ["Termómetro", "Sismógrafo", "Barómetro", "Anemómetro"], answer: 1 },
+      { q: "¿Quién escribió 'Cien años de soledad'?", options: ["Mario Vargas Llosa", "Gabriel García Márquez", "Pablo Neruda", "Julio Cortázar"], answer: 1 },
+      { q: "¿Qué órgano del cuerpo humano bombea la sangre?", options: ["Pulmón", "Cerebro", "Hígado", "Corazón"], answer: 3 },
+      { q: "¿Qué gas respiramos para vivir?", options: ["Dióxido de carbono", "Oxígeno", "Nitrógeno", "Helio"], answer: 1 },
+      { q: "¿En qué país se encuentran las pirámides de Giza?", options: ["México", "Perú", "Egipto", "India"], answer: 2 },
+      { q: "¿Qué día celebramos la independencia de México?", options: ["20 de noviembre", "5 de mayo", "16 de septiembre", "1 de julio"], answer: 2 },
+      { q: "¿Cuál es el océano más grande del planeta?", options: ["Atlántico", "Índico", "Ártico", "Pacífico"], answer: 3 },
+    ];
+
+    let current = 0;
+    let score = 0;
+
+    const quiz = document.getElementById("quiz");
+    const nextBtn = document.getElementById("nextBtn");
+    const result = document.getElementById("result");
+
+    function loadQuestion() {
+      nextBtn.disabled = true;
+      nextBtn.style.opacity = 0.5;
+      nextBtn.style.pointerEvents = "none";
+
+      const q = questions[current];
+      quiz.innerHTML = `<div class='question'>${current + 1}. ${q.q}</div>`;
+      const options = document.createElement("div");
+      options.className = "options";
+
+      q.options.forEach((opt, i) => {
+        const btn = document.createElement("button");
+        btn.textContent = opt;
+        btn.onclick = () => selectAnswer(btn, i);
+        options.appendChild(btn);
+      });
+
+      quiz.appendChild(options);
+    }
+
+    function selectAnswer(button, index) {
+      const buttons = document.querySelectorAll(".options button");
+      buttons.forEach(btn => btn.disabled = true);
+
+      if (index === questions[current].answer) {
+        button.classList.add("correct");
+        score++;
+      } else {
+        button.classList.add("incorrect");
+        buttons[questions[current].answer].classList.add("correct");
+      }
+
+      nextBtn.disabled = false;
+      nextBtn.style.opacity = 1;
+      nextBtn.style.pointerEvents = "auto";
+    }
+
+    nextBtn.onclick = () => {
+      current++;
+      if (current < questions.length) {
+        loadQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      quiz.innerHTML = "";
+      nextBtn.style.display = "none";
+
+      let feedback;
+      if (score === 10) {
+        feedback = "¡Perfecto! ¡Eres un genio del conocimiento general!";
+      } else if (score >= 7) {
+        feedback = "¡Muy bien hecho! Tienes una gran base de conocimientos.";
+      } else if (score >= 4) {
+        feedback = "¡Buen intento! Aún puedes mejorar.";
+      } else {
+        feedback = "Sigue practicando, ¡vas por buen camino!";
+      }
+
+      result.innerHTML = `<p>Tu puntuación fue ${score} de 10.</p><p>${feedback}</p>`;
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
