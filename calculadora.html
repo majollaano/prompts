@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Gastos Diarios</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <style>
+    body {
+      background: #f0f8ff;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .container {
+      margin-top: 50px;
+      max-width: 600px;
+      background: #ffffff;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      padding: 30px;
+    }
+    .btn-primary {
+      background-color: #00bcd4;
+      border: none;
+    }
+    .btn-primary:hover {
+      background-color: #008c9e;
+    }
+    .list-group-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    #total {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #4caf50;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container animate__animated animate__fadeIn">
+    <h2 class="text-center mb-4">Calculadora de Gastos Diarios</h2>
+    <form id="gastoForm" class="mb-3">
+      <div class="row g-2">
+        <div class="col-6">
+          <input type="text" id="concepto" class="form-control" placeholder="Concepto" required>
+        </div>
+        <div class="col-4">
+          <input type="number" id="monto" class="form-control" placeholder="Monto" min="0.01" step="0.01" required>
+        </div>
+        <div class="col-2">
+          <button type="submit" class="btn btn-primary w-100">+</button>
+        </div>
+      </div>
+    </form>
+
+    <ul class="list-group mb-3" id="listaGastos"></ul>
+
+    <div id="total" class="text-end">Total: $0.00</div>
+  </div>
+
+  <script>
+    const gastoForm = document.getElementById("gastoForm");
+    const conceptoInput = document.getElementById("concepto");
+    const montoInput = document.getElementById("monto");
+    const listaGastos = document.getElementById("listaGastos");
+    const totalDiv = document.getElementById("total");
+
+    let total = 0;
+
+    gastoForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const concepto = conceptoInput.value.trim();
+      const monto = parseFloat(montoInput.value);
+
+      if (concepto === '' || isNaN(monto) || monto <= 0) return;
+
+      const li = document.createElement("li");
+      li.className = "list-group-item animate__animated animate__fadeInUp";
+      li.innerHTML = `<span>${concepto}</span><span>$${monto.toFixed(2)}</span>`;
+
+      listaGastos.appendChild(li);
+
+      total += monto;
+      actualizarTotal();
+
+      conceptoInput.value = "";
+      montoInput.value = "";
+    });
+
+    function actualizarTotal() {
+      totalDiv.classList.add("animate__animated", "animate__pulse");
+      totalDiv.innerHTML = `Total: $${total.toFixed(2)}`;
+      setTimeout(() => {
+        totalDiv.classList.remove("animate__animated", "animate__pulse");
+      }, 600);
+    }
+  </script>
+</body>
+</html>
